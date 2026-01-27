@@ -53,6 +53,11 @@ jobs:
           mkdir -p "${{ env.SERVICE_LOCATION }}/target"
           echo "unzip command"
           unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
+
+          cd mimoto
+          find ../mimoto/target -name '*.jar' -type f \
+            -exec zip mimoto-recreated.zip {} +
+          mv mimoto-recreated.zip ..
           
           echo "find command"
           cd ${{ env.SERVICE_LOCATION }}
