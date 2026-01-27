@@ -151,6 +151,9 @@ public class CredentialShareController {
                 utilities.getDataPath(),
                 String.format(CredentialShareServiceImpl.VC_REQUEST_FILE_NAME, response.getResponse().getRequestId())
             );
+            // Files.write(vcRequestIdPath, gson.toJson(response).getBytes());
+            Path vcRequestIdPath = Paths.get("data", vcRequestId + ".json");
+            Files.createDirectories(vcRequestIdPath.getParent());
             Files.write(vcRequestIdPath, gson.toJson(response).getBytes());
         }
 
