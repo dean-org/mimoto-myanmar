@@ -50,7 +50,7 @@ jobs:
           
           echo "LS ./"
           ls .
-          mkdir -p "${{ env.SERVICE_LOCATION }}/target"
+          mkdir -p "mimoto/target"
           echo "unzip command"
           unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
 
