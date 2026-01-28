@@ -54,10 +54,13 @@ jobs:
           echo "unzip command"
           unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
 
-          cd mimoto
+          echo "Creating recreated zip"
+          rm -f mimoto-recreated.zip
+
           find ../mimoto/target -name '*.jar' -type f \
             -exec zip mimoto-recreated.zip {} +
-          mv mimoto-recreated.zip ..
+          echo "Final zip:"
+          ls -lh mimoto-recreated.zip
           
           echo "find command"
           cd ${{ env.SERVICE_LOCATION }}
