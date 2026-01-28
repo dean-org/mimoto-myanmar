@@ -55,16 +55,22 @@ jobs:
           unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
 
           echo "Creating recreated zip"
-          rm -f mimoto-recreated.zip
-
-          find ../mimoto/target -name '*.jar' -type f \
-            -exec zip mimoto-recreated.zip {} +
-          echo "Final zip:"
-          ls -lh mimoto-recreated.zip
+          rm -f "${{ env.NEW_BUILD_ARTIFACT }}.zip"
           
-          echo "find command"
-          cd ${{ env.SERVICE_LOCATION }}
-          find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
+          find mimoto/target -name "*.jar" -type f \
+          -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
+
+          echo "Final zip contents:"
+          unzip -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
+
+          # find ../mimoto/target -name '*.jar' -type f \
+          #   -exec zip mimoto-recreated.zip {} +
+          # echo "Final zip:"
+          # ls -lh mimoto-recreated.zip  
+          
+          # echo "find command"
+          # cd ${{ env.SERVICE_LOCATION }}
+          # find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
