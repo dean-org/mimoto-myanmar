@@ -141,7 +141,7 @@ jobs:
             SERVICE_NAME: 'mimoto'
             BUILD_ARTIFACT: 'mimoto-recreated'
       fail-fast: false
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
+    uses: ./.github/workflows/docker-build.yml
     name: ${{ matrix.SERVICE_NAME }}
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
