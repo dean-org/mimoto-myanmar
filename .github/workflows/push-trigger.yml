@@ -64,6 +64,9 @@ jobs:
             # FIX 2: correct find path
             find . -path '*/target/*' -name '*.jar' -type f -executable \
               -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
+
+      - name: List files before upload
+        run: ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       
       # - name: recreate zip
       #   run: |
