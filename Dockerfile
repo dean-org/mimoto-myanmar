@@ -68,8 +68,9 @@ ENV work_dir=/home/${container_user}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME ${work_dir}/logs ${work_dir}/Glowroot
 
-ADD ./target/mimoto-*.jar ./mimoto.jar
+# ADD ./target/mimoto-*.jar ./mimoto.jar
 #COPY ./target/mimoto-*.jar mimoto.jar
+ADD ./mimoto-*.jar ./mimoto.jar
 
 # change permissions of file inside working dir
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
