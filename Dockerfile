@@ -71,7 +71,7 @@ VOLUME ${work_dir}/logs ${work_dir}/Glowroot
 # ADD ./target/mimoto-*.jar ./mimoto.jar
 #COPY ./target/mimoto-*.jar mimoto.jar
 
-COPY mimoto.jar /home/${container_user}/mimoto.jar
+COPY ./mimoto.jar /home/${container_user}/mimoto.jar
 
 RUN chown ${container_user}:${container_user_group} mimoto.jar
 
