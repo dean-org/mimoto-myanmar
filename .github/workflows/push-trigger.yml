@@ -46,16 +46,37 @@ jobs:
           path: ../
       - name: recreate zip
         run: |
-          cd ../
+            cd ../
+              
+            echo "LS ./"
+            ls .
           
-          echo "LS ./"
-          ls .
-          echo "unzip command"
-          unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
+            # FIX 1: create directory before unzip
+            mkdir -p "${{ env.SERVICE_LOCATION }}/target"
           
-          echo "find command"
-          cd ${{ env.SERVICE_LOCATION }}
-          find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
+            echo "unzip command"
+            unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" \
+               -d "${{ env.SERVICE_LOCATION }}/target/"
+              
+            echo "find command"
+            cd "${{ env.SERVICE_LOCATION }}"
+          
+            # FIX 2: correct find path
+            find . -path '*/target/*' -name '*.jar' -type f -executable \
+              -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
+      
+      # - name: recreate zip
+      #   run: |
+      #     cd ../
+          
+      #     echo "LS ./"
+      #     ls .
+      #     echo "unzip command"
+      #     unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
+          
+      #     echo "find command"
+      #     cd ${{ env.SERVICE_LOCATION }}
+      #     find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
