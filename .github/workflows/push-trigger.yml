@@ -72,15 +72,15 @@ jobs:
               ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: List files before upload
         run: ls -l 
-      - name: Show zip location
-        run: |
-          echo "Current dir: $(pwd)"
-          find . -name "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: Move recreated zip into workspace
         run: |
           echo "Workspace is: $GITHUB_WORKSPACE"
           cp /home/runner/work/mimoto-myanmar/mimoto/mimoto-recreated.zip $GITHUB_WORKSPACE/mimoto-recreated.zip
           ls -lh $GITHUB_WORKSPACE/mimoto-recreated.zip
+      - name: Verify artifact location
+        run: |
+          pwd
+          ls -lh
       
       # - name: recreate zip
       #   run: |
