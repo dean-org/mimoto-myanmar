@@ -65,7 +65,9 @@ jobs:
               cd "${{ env.SERVICE_LOCATION }}"
               find . -path '*/target/*' -name '*.jar' -type f \
                 -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
-          
+                
+              echo "Current dir: $(pwd)"
+      
               echo "Created zip:"
               ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: List files before upload
