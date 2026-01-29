@@ -69,7 +69,7 @@ jobs:
               echo "Created zip:"
               ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: List files before upload
-        run: ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
+        run: ls -l 
       
       # - name: recreate zip
       #   run: |
