@@ -70,11 +70,12 @@ VOLUME ${work_dir}/logs ${work_dir}/Glowroot
 
 # ADD ./target/mimoto-*.jar ./mimoto.jar
 #COPY ./target/mimoto-*.jar mimoto.jar
-ADD ./mimoto-*.jar ./mimoto.jar
 
-RUN echo "Listing /home/mosip after copying JAR:" \
-    && ls -la /home/mosip \
-    && file mimoto.jar
+COPY mimoto.jar /home/${container_user}/mimoto.jar
+
+RUN chown ${container_user}:${container_user_group} mimoto.jar
+
+USER ${container_user}
 
 # change permissions of file inside working dir
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
