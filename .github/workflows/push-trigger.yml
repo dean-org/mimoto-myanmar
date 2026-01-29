@@ -53,18 +53,21 @@ jobs:
           
             # FIX 1: create directory before unzip
             mkdir -p "${{ env.SERVICE_LOCATION }}/target"
+            
+              echo "unzip command"
+              unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" \
+                -d "${{ env.SERVICE_LOCATION }}/target/"
           
-            echo "unzip command"
-            unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" \
-               -d "${{ env.SERVICE_LOCATION }}/target/"
-              
-            echo "find command"
-            cd "${{ env.SERVICE_LOCATION }}"
+              echo "Files under target:"
+              ls -l "${{ env.SERVICE_LOCATION }}/target/"
           
-            # FIX 2: correct find path
-            find . -path '*/target/*' -name '*.jar' -type f -executable \
-              -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
-
+              echo "find command"
+              cd "${{ env.SERVICE_LOCATION }}"
+              find . -path '*/target/*' -name '*.jar' -type f \
+                -exec zip "${{ env.NEW_BUILD_ARTIFACT }}.zip" {} +
+          
+              echo "Created zip:"
+              ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: List files before upload
         run: ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       
