@@ -70,6 +70,10 @@ jobs:
               ls -l "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       - name: List files before upload
         run: ls -l 
+      - name: Show zip location
+        run: |
+          echo "Current dir: $(pwd)"
+          find . -name "${{ env.NEW_BUILD_ARTIFACT }}.zip"
       
       # - name: recreate zip
       #   run: |
