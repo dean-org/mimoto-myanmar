@@ -119,7 +119,7 @@ jobs:
 
       - name: Build check for Docker label
         run: |
-          cd ${{ inputs.SERVICE_LOCATION }}
+          # cd ${{ inputs.SERVICE_LOCATION }}
           for layer in  ARG\\s+SOURCE ARG\\s+COMMIT_HASH ARG\\s+COMMIT_ID ARG\\s+BUILD_TIME LABEL\\s+source=\\$\\{SOURCE\\} LABEL\\s+commit_hash=\\$\\{COMMIT_HASH\\} LABEL\\s+commit_id=\\$\\{COMMIT_ID\\} LABEL\\s+build_time=\\$\\{BUILD_TIME\\}; do
             layer_count=$( grep -Ev '^$' Dockerfile | grep -Ec "$layer" || true);
           
