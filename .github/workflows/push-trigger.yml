@@ -110,7 +110,7 @@ jobs:
         include:
           - SERVICE_LOCATION: '../mimoto'
             SERVICE_NAME: 'mimoto'
-            BUILD_ARTIFACT: 'mimoto-recreated'
+            BUILD_ARTIFACT: 'mimoto'
       fail-fast: false
     uses: mosip/kattu/.github/workflows/docker-build.yml@master
     name: ${{ matrix.SERVICE_NAME }}
