@@ -112,7 +112,7 @@ jobs:
             SERVICE_NAME: 'mimoto'
             BUILD_ARTIFACT: 'mimoto'
       fail-fast: false
-    uses: ./.github/workflows/docker-build.yml
+    uses: ./.github/workflows/docker-build.yaml
     name: ${{ matrix.SERVICE_NAME }}
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
