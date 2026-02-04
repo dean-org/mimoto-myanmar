@@ -44,6 +44,9 @@ jobs:
         with:
           name: ${{ env.BUILD_ARTIFACT }}
           path: ../
+      - name: Check zip contents
+        run: |
+          unzip -l "${{ env.BUILD_ARTIFACT }}.zip"
       - name: recreate zip
         run: |
             cd ../
