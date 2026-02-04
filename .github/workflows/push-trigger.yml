@@ -75,10 +75,6 @@ jobs:
           echo "LS parent directory:"
           ls -l ..
 
-          zip mimoto-recreated.zip target/*.jar
-      
-          echo "Created zip:"
-          ls -l mimoto-recreated.zip
 
       - name: Print workspace directory
         run: |
@@ -87,12 +83,18 @@ jobs:
           echo "Listing files in workspace:"
           ls -l $GITHUB_WORKSPACE
 
+       - name: Move recreated zip into workspace
+        run: |
+          echo "Workspace is: $GITHUB_WORKSPACE"
+          cp /home/runner/work/mimoto-myanmar/mimoto/mimoto-recreated.zip $GITHUB_WORKSPACE/mimoto-recreated.zip
+          ls -lh $GITHUB_WORKSPACE/mimoto-recreated.zip
+
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.NEW_BUILD_ARTIFACT }}
-          path: mimoto/mimoto-recreated.zip
+          path: $GITHUB_WORKSPACE/mimoto-recreated.zip
 
 
   publish_to_nexus:
