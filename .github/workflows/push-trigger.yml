@@ -80,7 +80,12 @@ jobs:
           echo "Created zip:"
           ls -l mimoto-recreated.zip
 
-      
+      - name: Print workspace directory
+        run: |
+          echo "GITHUB_WORKSPACE is: $GITHUB_WORKSPACE"
+          pwd
+          echo "Listing files in workspace:"
+          ls -l $GITHUB_WORKSPACE
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
