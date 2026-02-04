@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.NEW_BUILD_ARTIFACT }}
-          path:  /mimoto/mimoto-recreated.zip
+          path:  mimoto/mimoto-recreated.zip
 
 
   publish_to_nexus:
