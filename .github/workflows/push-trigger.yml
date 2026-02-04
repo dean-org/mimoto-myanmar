@@ -66,6 +66,15 @@ jobs:
           cd ${{ env.SERVICE_LOCATION }}
           find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
 
+          echo "PWD after zip:"
+          pwd
+          
+          echo "LS current directory:"
+          ls -l
+          
+          echo "LS parent directory:"
+          ls -l ..
+
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
         uses: actions/upload-artifact@v4
