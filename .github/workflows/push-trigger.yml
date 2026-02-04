@@ -104,7 +104,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_INJI_TEAM }}
 
   build-dockers:
-    needs: recreate-zips
+    needs: build-mimoto
     strategy:
       matrix:
         include:
