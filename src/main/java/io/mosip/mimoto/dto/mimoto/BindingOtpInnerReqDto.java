@@ -12,5 +12,6 @@ public class BindingOtpInnerReqDto {
     private String individualId;
     @NotNull
     @NotEmpty
+    @Schema(description = "Notifying medium in which OTP is sent", allowableValues = {"EMAIL"})
     private List<String> otpChannels;
 }
