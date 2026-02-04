@@ -191,7 +191,7 @@ public class RestApiClient {
             headers.add("partner-id", partnerId);
             headers.add("partner-api-key", partnerApiKey);
             headers.add("REQUEST_ID", UUID.randomUUID().toString());
-            headers.add("TIMESTAMP", DateUtils.getRequestTimeString())
+            headers.add("TIMESTAMP", DateUtils.getRequestTimeString());
         }
 
         if (requestType != null) {
