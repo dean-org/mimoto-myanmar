@@ -83,7 +83,7 @@ jobs:
           echo "Listing files in workspace:"
           ls -l $GITHUB_WORKSPACE
 
-       - name: Move recreated zip into workspace
+      - name: Move recreated zip into workspace
         run: |
           echo "Workspace is: $GITHUB_WORKSPACE"
           cp /home/runner/work/mimoto-myanmar/mimoto/mimoto-recreated.zip $GITHUB_WORKSPACE/mimoto-recreated.zip
