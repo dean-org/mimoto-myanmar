@@ -131,7 +131,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - SERVICE_LOCATION: 'mimoto'
+          - SERVICE_LOCATION: '.'
             SERVICE_NAME: 'mimoto'
             BUILD_ARTIFACT: 'mimoto-recreated'
       fail-fast: false
