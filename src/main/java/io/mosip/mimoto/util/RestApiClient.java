@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * The Class RestApiClient.
@@ -189,6 +190,8 @@ public class RestApiClient {
             headers.add("Authorization", bearerToken);
             headers.add("partner-id", partnerId);
             headers.add("partner-api-key", partnerApiKey);
+            headers.add("REQUEST_ID", UUID.randomUUID().toString());
+            headers.add("TIMESTAMP", DateUtils.getRequestTimeString())
         }
 
         if (requestType != null) {
