@@ -21,7 +21,7 @@ public class RequestValidator {
 
     private static Logger logger = LoggerFactory.getLogger(RequestValidator.class);
 
-    @Value("${mosip.notificationtype:EMAIL|PHONE}")
+    @Value("${mosip.notificationtype:EMAIL}")
     private String notificationType;
     public void validateInputRequest(BindingResult result){
         if(result.hasErrors()){
