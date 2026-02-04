@@ -75,11 +75,13 @@ jobs:
           echo "LS parent directory:"
           ls -l ..
 
-      - name: Move recreated zip into workspace
-        run: |
-          echo "Workspace is: $GITHUB_WORKSPACE"
-          cp /home/runner/work/mimoto-myanmar/mimoto/mimoto-recreated.zip $GITHUB_WORKSPACE/mimoto-recreated.zip
-          ls -lh $GITHUB_WORKSPACE/mimoto-recreated.zip
+           cd mimoto
+          zip mimoto-recreated.zip target/*.jar
+      
+          echo "Created zip:"
+          ls -l mimoto-recreated.zip
+
+      
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
