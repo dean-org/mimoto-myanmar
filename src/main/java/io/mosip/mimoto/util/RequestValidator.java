@@ -36,6 +36,8 @@ public class RequestValidator {
     public void validateNotificationChannel(List<String> otpChannelList) {
         List<String> incorrectNotificationChannel;
         logger.info("\n Notification Types from application-default.properties in mosip-config - > {}", notificationType);
+        otpChannelList.removeIf(otpChannel -> !notificationType.contains(otpChannel));
+        logger.info("Filtered otpChannels to valid channels: {}", String.join(",", otpChannelList));
         incorrectNotificationChannel = otpChannelList
                 .stream()
                 .filter(otpChannel -> !notificationType.contains(otpChannel))
