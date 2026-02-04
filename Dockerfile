@@ -1,4 +1,6 @@
-FROM openjdk:11
+#FROM openjdk:11
+FROM eclipse-temurin:11-jdk-focal
+
 
 ARG SOURCE
 ARG COMMIT_HASH
