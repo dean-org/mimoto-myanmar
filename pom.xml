@@ -5,7 +5,7 @@
     <artifactId>mimoto</artifactId>
     <version>0.20.0</version>
     <name>mimoto</name>
-    <url>https://github.com/mosip/mimoto</url>
+    <url>https://github.com/dean-org/mimoto-myanmar</url>
     <description>Mobile server backend supporting Inji.</description>
 
     <licenses>
@@ -15,9 +15,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git://github.com/mosip/mimoto.git</connection>
-        <developerConnection>scm:git:ssh://github.com:mosip/mimoto.git</developerConnection>
-        <url>https://github.com/mosip/mimoto</url>
+        <connection>scm:git:git://github.com/dean-org/mimoto-myanmar.git</connection>
+        <developerConnection>scm:git:ssh://github.com:dean-org/mimoto-myanmar.git</developerConnection>
+        <url>https://github.com/dean-org/mimoto-myanmar</url>
         <tag>HEAD</tag>
     </scm>
     <developers>
@@ -25,7 +25,7 @@
             <name>Mosip</name>
             <email>mosip.emailnotifier@gmail.com</email>
             <organization>io.mosip</organization>
-            <organizationUrl>https://github.com/mosip/mimoto</organizationUrl>
+            <organizationUrl>https://github.com/dean-org/mimoto-myanmar</organizationUrl>
         </developer>
     </developers>
 
