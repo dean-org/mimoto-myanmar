@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.NEW_BUILD_ARTIFACT }}
-          path: ${{ env.NEW_BUILD_ARTIFACT }}.zip
+          path: mimoto/${{ env.NEW_BUILD_ARTIFACT }}.zip
 
 
   publish_to_nexus:
