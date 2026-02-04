@@ -70,8 +70,8 @@ jobs:
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.NEW_BUILD_ARTIFACT }}
-          path: ${{ env.NEW_BUILD_ARTIFACT }}.zip
+         name: mimoto
+         path: mimoto.zip
 
 
   publish_to_nexus:
