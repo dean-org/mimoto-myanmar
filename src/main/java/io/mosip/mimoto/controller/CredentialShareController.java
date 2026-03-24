@@ -132,6 +132,7 @@ public class CredentialShareController {
         credentialReqDTO.setEncryptionKey(partnerEncryptionKey);
         credentialReqDTO.setIssuer(partnerId);
         credentialReqDTO.setIndividualId(requestDTO.getIndividualId());
+        credentialReqDTO.setIndividualIdType(requestDTO.getIndividualIdType());
         credentialReqDTO.setOtp(requestDTO.getOtp());
         credentialReqDTO.setTransactionID(requestDTO.getTransactionID());
         credentialReqDTO.setCredentialType(requestDTO.getCredentialType());
