@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class CredentialRequestDTO {
     private String individualId;
+    private String individualIdType;
     private String otp;
     private String transactionID;
     private String credentialType;
