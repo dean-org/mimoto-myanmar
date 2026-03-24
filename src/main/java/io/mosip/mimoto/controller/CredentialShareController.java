@@ -119,6 +119,7 @@ public class CredentialShareController {
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> request(@RequestBody AppCredentialRequestDTO requestDTO)
             throws Exception {
+            logger.info("Received credential request: {}", requestDTO);
 
         if (StringUtils.isEmpty(requestDTO.getIndividualId())) {
             logger.error("Received empty individual id for transaction id - " + requestDTO.getTransactionID());
@@ -141,6 +142,7 @@ public class CredentialShareController {
         mosipCredentialRequestPayload.setRequesttime(DateUtils.getRequestTimeString());
         mosipCredentialRequestPayload.setRequest(credentialReqDTO);
 
+        logger.info("Sending payload to RESIDENT_CREDENTIAL_REQUEST API: {}", gson.toJson(mosipCredentialRequestPayload));
         CredentialRequestResponseDTO response = (CredentialRequestResponseDTO)restClientService
                 .postApi(ApiName.RESIDENT_CREDENTIAL_REQUEST, "", "", mosipCredentialRequestPayload,
                 CredentialRequestResponseDTO.class, MediaType.APPLICATION_JSON);
