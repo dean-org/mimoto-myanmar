@@ -47,6 +47,7 @@ public class ResidentServiceController {
     @PostMapping("/req/otp")
     @SuppressWarnings("unchecked")
     public ResponseEntity<Object> otpRequest(@Valid @RequestBody AppOTPRequestDTO requestDTO, BindingResult result) throws Exception {
+         logger.info("Received OTP request: {}", requestDTO);
         requestValidator.validateInputRequest(result);
         requestValidator.validateNotificationChannel(requestDTO.getOtpChannel());
         OTPRequestDTO mosipOTPRequestPayload = new OTPRequestDTO();
