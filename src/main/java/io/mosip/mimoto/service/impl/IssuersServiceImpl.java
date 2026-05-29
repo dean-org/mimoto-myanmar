@@ -107,7 +107,7 @@ public class IssuersServiceImpl implements IssuersService {
     @Override
     public CredentialIssuerWellKnownResponse getIssuerWellknown(String issuerId) throws ApiNotAccessibleException, IOException {
         logger.info("getIssuerWellknown() called with issuerId={}", issuerId);
-        IssuersResponse issuersResponse = getAllIssuersWithAllFields();
+        IssuersDTO  issuersResponse = getAllIssuersWithAllFields();
         logger.info("Total issuers loaded={}", issuersResponse.getIssuers().size());
         issuersResponse.getIssuers().forEach(issuer -> {
             logger.info(
