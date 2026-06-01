@@ -44,7 +44,7 @@ jobs:
     env:
       BUILD_ARTIFACT: mimoto
       NEW_BUILD_ARTIFACT: mimoto-recreated
-      SERVICE_LOCATION: mimoto-myanmar
+      SERVICE_LOCATION: mimoto
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v4
@@ -59,7 +59,7 @@ jobs:
           echo "LS ./"
           ls .
           echo "unzip command"
-          unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
+          unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "mimoto-myanmar/target/"
           
           echo "find command"
           cd ${{ env.SERVICE_LOCATION }}
