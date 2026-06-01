@@ -166,7 +166,7 @@ jobs:
       - name: Process and push Docker images
         if: "${{ github.event_name != 'pull_request' }}"
         run: |
-          cd ${{ inputs.SERVICE_LOCATION }}
+          # cd ${{ inputs.SERVICE_LOCATION }}
           
           # Set image ID and version for pushing
           IMAGE_ID=$NAMESPACE/$SERVICE_NAME
