@@ -108,9 +108,9 @@ jobs:
             pwd
 
             echo "Listing files:"
-            ls -la
+            unzip -l mimoto-recreated.zip
 
-            unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "${{ inputs.SERVICE_LOCATION }}/target/*" -d "target/"
+            unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "target/*" -d "target/"
 
       - name: Unzip and extract for npm
         if: ${{ contains(inputs.NPM_BUILD, 'true' ) && ( inputs.BUILD_ARTIFACT != false )  && ( inputs.ONLY_DOCKER == false )}}
