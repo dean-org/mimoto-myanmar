@@ -93,7 +93,7 @@ jobs:
         id: getPomVersion
         uses: mavrosxristoforos/get-xml-info@1.1.1
         with:
-          xml-file: .mimoto-myanmar/pom.xml
+          xml-file: mimoto-myanmar/pom.xml
           xpath: /*[local-name()="project"]/*[local-name()="version"]
 
       - name: Unzip and extract for docker build
