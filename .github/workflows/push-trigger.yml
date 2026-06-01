@@ -206,7 +206,7 @@ jobs:
             ONLY_DOCKER: true
       fail-fast: false
     name: ${{ matrix.SERVICE_NAME }}
-    uses:  ./.github/workflows/docker-build.yaml
+    uses:  ./.github/workflows/docker-build.yml
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
