@@ -104,7 +104,7 @@ jobs:
       - name: Unzip and extract for maven
         if: ${{ contains(inputs.NPM_BUILD, 'false' ) && ( inputs.BUILD_ARTIFACT != 'false' ) && ( inputs.ONLY_DOCKER == false ) }}
         run: |
-          unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "target/*" -d target/"
+          unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "target/*" -d target/
 
       - name: Unzip and extract for npm
         if: ${{ contains(inputs.NPM_BUILD, 'true' ) && ( inputs.BUILD_ARTIFACT != false )  && ( inputs.ONLY_DOCKER == false )}}
