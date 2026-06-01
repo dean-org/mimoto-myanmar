@@ -62,8 +62,8 @@ jobs:
           unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "mimoto-myanmar/target/"
           
           echo "find command"
-          cd ${{ env.SERVICE_LOCATION }}
-          find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
+          cd  mimoto-myanmar
+          find ../mimoto-myanmar -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') }}
