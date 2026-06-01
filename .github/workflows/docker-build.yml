@@ -104,7 +104,13 @@ jobs:
       - name: Unzip and extract for maven
         if: ${{ contains(inputs.NPM_BUILD, 'false' ) && ( inputs.BUILD_ARTIFACT != 'false' ) && ( inputs.ONLY_DOCKER == false ) }}
         run: |
-         unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "${{ inputs.SERVICE_LOCATION }}/target/*" -d "mimoto-myanmar/target/"
+            echo "Current directory:"
+            pwd
+
+            echo "Listing files:"
+            ls -la
+
+            unzip -uj "${{ inputs.BUILD_ARTIFACT }}.zip" "${{ inputs.SERVICE_LOCATION }}/target/*" -d "mimoto-myanmar/target/"
 
       - name: Unzip and extract for npm
         if: ${{ contains(inputs.NPM_BUILD, 'true' ) && ( inputs.BUILD_ARTIFACT != false )  && ( inputs.ONLY_DOCKER == false )}}
