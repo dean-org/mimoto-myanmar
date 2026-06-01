@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.DEV_NAMESPACE_DOCKER_HUB }}
-      SERVICE_LOCATION: mimoto-myanamr
+      SERVICE_LOCATION: ${{ inputs.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
       PLATFORMS: ${{ inputs.PLATFORMS }}
 
