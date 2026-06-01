@@ -150,6 +150,7 @@ public class RestApiClient {
         }
         try {
             log.info("RestApiClient::postApi()::entry uri: {}", uri);
+            log.info("VCI REQUEST => URI: {} | BODY: {}",uri,new Gson().toJson(setRequestHeader(requestType, mediaType).getBody()));
             result = (T) rt.postForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
         } catch (Exception e) {
             log.error("RestApiClient::postApi()::error uri: {} {} {}", uri, e.getMessage(), e);
@@ -161,6 +162,7 @@ public class RestApiClient {
         T result = null;
         try {
             log.info("RestApiClient::postApi()::entry uri: {}", uri);
+            log.info("VCI REQUEST => URI: {} | BODY: {}",uri,new Gson().toJson(setRequestHeader(requestType, mediaType).getBody()));
             result = (T) plainRestTemplate.postForObject(uri, setRequestHeader(requestType, mediaType, useBearerToken), responseClass);
         } catch (Exception e) {
             log.error("RestApiClient::postApi()::error uri: {} {} {}", uri, e.getMessage(), e);
@@ -182,6 +184,7 @@ public class RestApiClient {
         T result = null;
         try {
             log.info("RestApiClient::postApi()::entry uri: {}", uri);
+            log.info("VCI REQUEST => URI: {} | BODY: {}",uri,new Gson().toJson(setRequestHeader(requestType, mediaType).getBody()));
             result = (T) plainRestTemplate.postForObject(uri, setRequestHeader(requestType, mediaType, bearerToken), responseClass);
         } catch (Exception e) {
             log.error("RestApiClient::postApi()::error uri: {} {} {}", uri, e.getMessage(), e);
