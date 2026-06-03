@@ -117,6 +117,7 @@ public class CredentialShareController {
     @Operation(summary = SwaggerLiteralConstants.CREDENTIALS_SHARE_REQUEST_VC_SUMMARY, description = SwaggerLiteralConstants.CREDENTIALS_SHARE_REQUEST_VC_DESCRIPTION)
     public ResponseEntity<CredentialRequestResponseDTO> request(@RequestBody AppCredentialRequestDTO requestDTO)
             throws Exception {
+        log.info("Received credential share request for transactionId={} individualId={}", requestDTO.getTransactionID(), requestDTO.getIndividualId());
 
         if (StringUtils.isEmpty(requestDTO.getIndividualId())) {
             log.error("Received empty individual id for transaction id - " + requestDTO.getTransactionID());
@@ -149,6 +150,10 @@ public class CredentialShareController {
                 utilities.getDataPath(),
                 String.format(CredentialShareServiceImpl.VC_REQUEST_FILE_NAME, response.getResponse().getRequestId())
             );
+            if (vcRequestIdPath.getParent() != null) {
+                Files.createDirectories(vcRequestIdPath.getParent());
+            }
+            log.debug("Writing credential share request cache file at {}", vcRequestIdPath);
             Files.write(vcRequestIdPath, gson.toJson(response).getBytes());
         }
 
