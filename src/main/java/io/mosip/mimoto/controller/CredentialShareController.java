@@ -225,9 +225,9 @@ public class CredentialShareController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
         } catch (IOException exception) {
             log.error("I/O error while reading credential share cache for requestId={}", requestId, exception);
-            ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
+            ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.RESOURCE_NOT_FOUND.getErrorCode(),
                     "Unable to read credential share cache for requestId=" + requestId + ". " + exception.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
         } catch (Exception exception) {
             log.error("Unexpected error while processing credential share download for requestId={}", requestId, exception);
             ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
