@@ -9,12 +9,14 @@ import io.mosip.mimoto.constant.SwaggerLiteralConstants;
 import io.mosip.mimoto.core.http.RequestWrapper;
 import io.mosip.mimoto.core.http.ResponseWrapper;
 import io.mosip.mimoto.dto.mimoto.AppCredentialRequestDTO;
+import io.mosip.mimoto.dto.ErrorDTO;
 import io.mosip.mimoto.dto.mimoto.CredentialDownloadRequestDTO;
 import io.mosip.mimoto.dto.mimoto.CredentialDownloadResponseDTO;
 import io.mosip.mimoto.dto.mimoto.GenericResponseDTO;
 import io.mosip.mimoto.dto.resident.CredentialRequestDTO;
 import io.mosip.mimoto.dto.resident.CredentialRequestResponseDTO;
 import io.mosip.mimoto.dto.resident.CredentialRequestStatusResponseDTO;
+import io.mosip.mimoto.exception.ErrorConstants;
 import io.mosip.mimoto.model.EventModel;
 import io.mosip.mimoto.service.RestClientService;
 import io.mosip.mimoto.service.impl.CredentialShareServiceImpl;
@@ -32,7 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,19 +83,18 @@ public class CredentialShareController {
      * @return
      * @throws Exception
      */
-    @PostMapping(path = "/callback/notify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = {"/callback/notify", "/callback/notify/"},consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthenticateContentAndVerifyIntent(secret = "${mosip.event.secret}", callback = "/v1/mimoto/credentialshare/callback/notify", topic = "${mosip.event.topic}")
     @Operation(summary = SwaggerLiteralConstants.CREDENTIALS_SHARE_HANDLE_SUBSCRIBED_EVENT_SUMMARY, description = SwaggerLiteralConstants.CREDENTIALS_SHARE_HANDLE_SUBSCRIBED_EVENT_DESCRIPTION)
     public ResponseEntity<GenericResponseDTO> handleSubscribeEvent(@RequestBody EventModel eventModel)
             throws Exception {
         log.info("Received websub event:: transaction id = " + eventModel.getEvent().getTransactionId());
-        log.debug("Received websub event:: " + JsonUtils.javaObjectToJsonString(eventModel));
         GenericResponseDTO responseDTO = new GenericResponseDTO();
         Path vcRequestIdPath = Path.of(
             utilities.getDataPath(),
             String.format(CredentialShareServiceImpl.VC_REQUEST_FILE_NAME, eventModel.getEvent().getTransactionId())
         );
-        // Only process event if request id file exists in the storange.
+        // Only process event if request id file exists in the storage.
         if (vcRequestIdPath.toFile().exists()) {
             boolean documentGenerated = credentialShareService.generateDocuments(eventModel);
             log.info("Credential share process status: {} for event id: {}", documentGenerated, eventModel.getEvent().getId());
@@ -186,31 +187,52 @@ public class CredentialShareController {
      */
     @PostMapping(path = "/download", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = SwaggerLiteralConstants.CREDENTIALS_SHARE_DOWNLOAD_VC_SUMMARY, description = SwaggerLiteralConstants.CREDENTIALS_SHARE_DOWNLOAD_VC_DESCRIPTION)
-    public ResponseEntity<CredentialDownloadResponseDTO> download(@Valid @RequestBody CredentialDownloadRequestDTO requestDTO, BindingResult result)
+    public ResponseEntity<?> download(@Valid @RequestBody CredentialDownloadRequestDTO requestDTO, BindingResult result)
             throws Exception {
-                log.info("Received credential download request");
-                log.info("Request payload: {}", requestDTO);
+        String requestId = requestDTO != null ? requestDTO.getRequestId() : "null";
+        log.info("Received credential share download request for requestId={}", requestId);
         try {
+            if (result.hasErrors()) {
+                log.error("Validation failed for credential download request requestId={} errors={}", requestId, result.getAllErrors());
+            }
             requestValidator.validateInputRequest(result);
-            JsonNode decryptedCredentialJSON = utilities.getDecryptedVC(requestDTO.getRequestId());
-            JsonNode requestedCredentialJSON = utilities.getRequestVC(requestDTO.getRequestId());
-            JsonNode credentialJSON = utilities.getVC(requestDTO.getRequestId());
 
-            // Combine original encrypted verifiable credential and decrypted
-            if (decryptedCredentialJSON != null && credentialJSON != null) {
+            JsonNode decryptedCredentialJSON = utilities.getDecryptedVC(requestId);
+            JsonNode requestedCredentialJSON = utilities.getRequestVC(requestId);
+            JsonNode credentialJSON = utilities.getVC(requestId);
+
+            boolean decryptedExists = decryptedCredentialJSON != null;
+            boolean requestedExists = requestedCredentialJSON != null;
+            boolean vcExists = credentialJSON != null;
+            log.debug("Credential share cache status for requestId={} - decrypted={}, requested={}, vc={}", requestId,
+                    decryptedExists, requestedExists, vcExists);
+
+            if (decryptedExists && requestedExists && vcExists) {
                 requestValidator.validateCredentialDownloadRequest(requestDTO, requestedCredentialJSON);
                 CredentialDownloadResponseDTO credentialDownloadBody = new CredentialDownloadResponseDTO();
                 credentialDownloadBody.setCredential(decryptedCredentialJSON);
                 credentialDownloadBody.setVerifiableCredential(credentialJSON);
 
                 // Remove cached data.
-                utilities.removeCacheData(requestDTO.getRequestId());
+                utilities.removeCacheData(requestId);
                 return ResponseEntity.ok().body(credentialDownloadBody);
             }
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            String missingFiles = String.format("decrypted=%s, requested=%s, vc=%s", decryptedExists, requestedExists, vcExists);
+            log.warn("Credential share download data not found for requestId={} - {}", requestId, missingFiles);
+            ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.RESOURCE_NOT_FOUND.getErrorCode(),
+                    "Credential share data not found for requestId=" + requestId + ". " + missingFiles);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
         } catch (IOException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            log.error("I/O error while reading credential share cache for requestId={}", requestId, exception);
+            ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
+                    "Unable to read credential share cache for requestId=" + requestId + ". " + exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+        } catch (Exception exception) {
+            log.error("Unexpected error while processing credential share download for requestId={}", requestId, exception);
+            ErrorDTO errorDTO = new ErrorDTO(ErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
+                    "Unexpected error while processing credential share download for requestId=" + requestId + ". " + exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
         }
     }
 }
