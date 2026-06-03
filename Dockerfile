@@ -65,6 +65,8 @@ WORKDIR /home/${container_user}
 
 ENV work_dir=/home/${container_user}
 
+RUN mkdir -p /home/${container_user}/data
+
 # change volume to whichever storage directory you want to use for this container.
 VOLUME ${work_dir}/logs ${work_dir}/Glowroot
 
