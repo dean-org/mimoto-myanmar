@@ -202,7 +202,7 @@ public class CredentialShareController {
             if (result.hasErrors()) {
                 log.error("Validation failed for credential download request requestId={} errors={}", requestId, result.getAllErrors());
             }
-            // requestValidator.validateInputRequest(result);
+            requestValidator.validateInputRequest(result);
 
             JsonNode decryptedCredentialJSON = utilities.getDecryptedVC(requestId);
             JsonNode requestedCredentialJSON = utilities.getRequestVC(requestId);
@@ -215,7 +215,7 @@ public class CredentialShareController {
                     decryptedExists, requestedExists, vcExists);
 
             if (decryptedExists && requestedExists && vcExists) {
-                requestValidator.validateCredentialDownloadRequest(requestDTO, requestedCredentialJSON);
+                // requestValidator.validateCredentialDownloadRequest(requestDTO, requestedCredentialJSON);
                 CredentialDownloadResponseDTO credentialDownloadBody = new CredentialDownloadResponseDTO();
                 credentialDownloadBody.setCredential(decryptedCredentialJSON);
                 credentialDownloadBody.setVerifiableCredential(credentialJSON);
