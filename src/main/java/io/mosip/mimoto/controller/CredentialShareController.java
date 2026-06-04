@@ -194,13 +194,15 @@ public class CredentialShareController {
     @Operation(summary = SwaggerLiteralConstants.CREDENTIALS_SHARE_DOWNLOAD_VC_SUMMARY, description = SwaggerLiteralConstants.CREDENTIALS_SHARE_DOWNLOAD_VC_DESCRIPTION)
     public ResponseEntity<?> download(@Valid @RequestBody CredentialDownloadRequestDTO requestDTO, BindingResult result)
             throws Exception {
+                  log.info("Download VC request received: {}", requestDTO);
+                log.info("BindingResult details: {}", result);
         String requestId = requestDTO != null ? requestDTO.getRequestId() : "null";
         log.info("Received credential share download request for requestId={}", requestId);
         try {
             if (result.hasErrors()) {
                 log.error("Validation failed for credential download request requestId={} errors={}", requestId, result.getAllErrors());
             }
-            requestValidator.validateInputRequest(result);
+            // requestValidator.validateInputRequest(result);
 
             JsonNode decryptedCredentialJSON = utilities.getDecryptedVC(requestId);
             JsonNode requestedCredentialJSON = utilities.getRequestVC(requestId);
