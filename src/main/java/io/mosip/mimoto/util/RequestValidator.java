@@ -50,6 +50,10 @@ public class RequestValidator {
         String response = "response";
         if(requestedCredentialJSON.has(response) && requestedCredentialJSON.get(response).has("id")) {
             String requestedIndividualId = requestedCredentialJSON.get(response).get("id").asText();
+            log.info("Download validation - clientSentId: [{}], cachedCredentialId: [{}], match: {}", 
+            requestDTO.getIndividualId(), 
+            requestedIndividualId,
+            requestDTO.getIndividualId().equals(requestedIndividualId));
             if (!requestDTO.getIndividualId().equals(requestedIndividualId)) {
                 throw new InvalidInputException(PlatformErrorMessages.MIMOTO_PGS_INVALID_INPUT_PARAMETER.getMessage() + " - " + "individualId");
             }
