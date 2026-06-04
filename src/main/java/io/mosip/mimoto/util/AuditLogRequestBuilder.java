@@ -81,7 +81,7 @@ public class AuditLogRequestBuilder {
             requestWrapper.setRequesttime(DateUtils.getRequestTimeString());
             requestWrapper.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
             responseWrapper = (ResponseWrapper<AuditResponseDto>) registrationProcessorRestService.postApi(apiname, "",
-                    "", requestWrapper, ResponseWrapper.class);
+                    "", requestWrapper, ResponseWrapper.class,MediaType.APPLICATION_JSON);
         } catch (ApisResourceAccessException arae) {
 
             log.error(arae.getMessage());
@@ -132,7 +132,7 @@ public class AuditLogRequestBuilder {
             requestWrapper.setRequesttime(DateUtils.getRequestTimeString());
             requestWrapper.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
             responseWrapper = (ResponseWrapper<AuditResponseDto>) registrationProcessorRestService
-                    .postApi(ApiName.AUDIT, "", "", requestWrapper, ResponseWrapper.class);
+                    .postApi(ApiName.AUDIT, "", "", requestWrapper, ResponseWrapper.class,MediaType.APPLICATION_JSON);
 
         } catch (ApisResourceAccessException arae) {
 
