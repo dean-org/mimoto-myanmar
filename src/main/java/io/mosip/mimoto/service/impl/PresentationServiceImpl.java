@@ -66,19 +66,12 @@ public class PresentationServiceImpl implements PresentationService {
         String redirectionString = presentationDefinitionDTO.getInputDescriptors()
                 .stream()
                 .findFirst()
-                .map(inputDescriptorDTO -> {
-            
+                .map(inputDescriptorDTO -> { 
                 boolean matchingProofTypes = inputDescriptorDTO.getFormat()
                         .get("ldpVc")
                         .get("proofTypes")
                         .stream()
-                        .anyMatch(proofType -> {
-                            log.info("Proof type from credential: {}", proofType);
-                            return vcCredentialResponse.getCredential()
-                                    .getProof()
-                                    .getType()
-                                    .equals(proofType);
-                        });
+                        .anyMatch(proofType -> vcCredentialResponse.getCredential().getProof().getType().equals(proofType));
             
                 log.info("Allowed proof types: {}",
                         inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
