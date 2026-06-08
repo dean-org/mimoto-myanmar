@@ -111,10 +111,10 @@ public class DataShareServiceImpl {
                     ErrorConstants.SERVER_UNAVAILABLE.getErrorCode(),
                     ErrorConstants.SERVER_UNAVAILABLE.getErrorMessage());
         }
+        VCCredentialResponse vcCredentialResponse = objectMapper.readValue(vcCredentialResponseString, VCCredentialResponse.class);
         log.info("Parsed response → format={}, credentialPresent={}",
         vcCredentialResponse.getFormat(),
         vcCredentialResponse.getCredential() != null);
-        VCCredentialResponse vcCredentialResponse = objectMapper.readValue(vcCredentialResponseString, VCCredentialResponse.class);
         log.info("Completed Mapping the Credential to Object => " + vcCredentialResponse );
         if(vcCredentialResponse.getCredential() == null){
             log.error("Credential is NULL from DataShare response!");
