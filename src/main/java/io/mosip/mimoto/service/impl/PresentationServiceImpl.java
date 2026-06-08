@@ -49,6 +49,9 @@ public class PresentationServiceImpl implements PresentationService {
     @Override
     public String authorizePresentation(PresentationRequestDTO presentationRequestDTO) throws IOException {
         VCCredentialResponse vcCredentialResponse = dataShareService.downloadCredentialFromDataShare(presentationRequestDTO);
+        log.info("DataShare response received in Mimoto: format={}, credential isNull={}",
+        vcCredentialResponse != null ? vcCredentialResponse.getFormat() : null,
+        vcCredentialResponse == null || vcCredentialResponse.getCredential() == null);
 
         PresentationDefinitionDTO presentationDefinitionDTO = presentationRequestDTO.getPresentationDefinition();
         if (presentationDefinitionDTO == null) {
@@ -56,6 +59,10 @@ public class PresentationServiceImpl implements PresentationService {
         }
 
         log.info("Started the Constructing VP Token");
+        if (vcCredentialResponse == null || vcCredentialResponse.getCredential() == null) {
+            log.error("Credential is NULL or EMPTY from DataShare. Full response: {}", vcCredentialResponse);
+            throw new VPNotCreatedException("Credential missing from DataShare response");
+        }
         String redirectionString = presentationDefinitionDTO.getInputDescriptors()
                 .stream()
                 .findFirst()
@@ -63,9 +70,12 @@ public class PresentationServiceImpl implements PresentationService {
                     boolean matchingProofTypes = inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes")
                             .stream()
                             .anyMatch(proofType -> vcCredentialResponse.getCredential().getProof().getType().equals(proofType));
+                    log.info("Proof type from credential: {}", proofType);
+                    log.info("Allowed proof types: {}",inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
                     if (matchingProofTypes) {
                         log.info("Started the Construction of VP token");
                         try {
+                            log.info("Constructing VP token for credential type: {}",vcCredentialResponse.getCredential().getType());
                             VerifiablePresentationDTO verifiablePresentationDTO = constructVerifiablePresentationString(vcCredentialResponse.getCredential());
                             String presentationSubmission = constructPresentationSubmission(verifiablePresentationDTO, presentationDefinitionDTO, inputDescriptorDTO);
                             String vpToken = objectMapper.writeValueAsString(verifiablePresentationDTO);
@@ -74,6 +84,9 @@ public class PresentationServiceImpl implements PresentationService {
                                     Base64.getUrlEncoder().encodeToString(vpToken.getBytes(StandardCharsets.UTF_8)),
                                     URLEncoder.encode(presentationSubmission, StandardCharsets.UTF_8));
                         } catch (JsonProcessingException e) {
+                            log.warn("No matching proof type found. credentialProofType={}, expectedTypes={}",
+                            vcCredentialResponse.getCredential().getProof().getType(),
+                            inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
                             throw new VPNotCreatedException(ErrorConstants.INVALID_REQUEST.getErrorMessage());
                         }
                     }
