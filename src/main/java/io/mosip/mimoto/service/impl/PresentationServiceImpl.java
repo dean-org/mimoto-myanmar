@@ -77,42 +77,27 @@ public class PresentationServiceImpl implements PresentationService {
                         inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
             
                 if (matchingProofTypes) {
-                    log.info("Started the Construction of VP token");
-                    try {
-                        log.info("Constructing VP token for credential type: {}",
-                                vcCredentialResponse.getCredential().getType());
-            
-                        VerifiablePresentationDTO verifiablePresentationDTO =
-                                constructVerifiablePresentationString(
-                                        vcCredentialResponse.getCredential());
-            
-                        String presentationSubmission =
-                                constructPresentationSubmission(
-                                        verifiablePresentationDTO,
-                                        presentationDefinitionDTO,
-                                        inputDescriptorDTO);
-            
-                        String vpToken =
-                                objectMapper.writeValueAsString(verifiablePresentationDTO);
-            
-                        return String.format(
-                                injiOvpRedirectURLPattern,
-                                presentationRequestDTO.getRedirectUri(),
-                                Base64.getUrlEncoder()
-                                        .encodeToString(vpToken.getBytes(StandardCharsets.UTF_8)),
-                                URLEncoder.encode(
-                                        presentationSubmission,
-                                        StandardCharsets.UTF_8));
-                    } catch (JsonProcessingException e) {
-                        throw new VPNotCreatedException(
-                                ErrorConstants.INVALID_REQUEST.getErrorMessage());
+                        log.info("Started the Construction of VP token");
+                        try {
+                            VerifiablePresentationDTO verifiablePresentationDTO = constructVerifiablePresentationString(vcCredentialResponse.getCredential());
+                            String presentationSubmission = constructPresentationSubmission(verifiablePresentationDTO, presentationDefinitionDTO, inputDescriptorDTO);
+                            String vpToken = objectMapper.writeValueAsString(verifiablePresentationDTO);
+                            return String.format(injiOvpRedirectURLPattern,
+                                    presentationRequestDTO.getRedirectUri(),
+                                    Base64.getUrlEncoder().encodeToString(vpToken.getBytes(StandardCharsets.UTF_8)),
+                                    URLEncoder.encode(presentationSubmission, StandardCharsets.UTF_8));
+                        } catch (JsonProcessingException e) {
+                            throw new VPNotCreatedException(ErrorConstants.INVALID_REQUEST.getErrorMessage());
+                        }
                     }
-                }
-            
-                log.info("No Credentials Matched the VP request.");
-                throw new VPNotCreatedException(
-                        ErrorConstants.INVALID_REQUEST.getErrorMessage());
-            })
+                    log.info("No Credentials Matched the VP request.");
+                    throw new VPNotCreatedException(ErrorConstants.INVALID_REQUEST.getErrorMessage());
+                }).orElseThrow(() -> new VPNotCreatedException(ErrorConstants.INVALID_REQUEST.getErrorMessage()));
+        if(redirectionString.length() > maximumResponseHeaderSize) {
+            throw new VPNotCreatedException(
+                    ErrorConstants.URI_TOO_LONG.getErrorCode(),
+                    ErrorConstants.URI_TOO_LONG.getErrorMessage());
+        }
         return redirectionString;
     }
 
