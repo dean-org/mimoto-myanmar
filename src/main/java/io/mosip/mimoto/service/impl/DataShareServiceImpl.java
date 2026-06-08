@@ -94,22 +94,34 @@ public class DataShareServiceImpl {
 
     public  VCCredentialResponse downloadCredentialFromDataShare(PresentationRequestDTO presentationRequestDTO) throws JsonProcessingException {
         log.info("Started the Credential Download From DataShare");
+        log.info("Incoming resource URI: {}", presentationRequestDTO.getResource());
+        log.info("Configured URL pattern: {}", dataShareGetUrlPattern);
         String credentialsResourceUri = presentationRequestDTO.getResource();
         if(!pathMatcher.match(dataShareGetUrlPattern, credentialsResourceUri)){
             throw new InvalidCredentialResourceException(
                     ErrorConstants.RESOURCE_INVALID.getErrorCode(),
                     ErrorConstants.RESOURCE_INVALID.getErrorMessage());
         }
+        log.info("Calling DataShare GET API...");
+        log.info("Final resolved URI: {}", credentialsResourceUri);
         String vcCredentialResponseString = restApiClient.getApi(credentialsResourceUri, String.class);
+        log.info("Raw response from DataShare: {}", vcCredentialResponseString);
         if (vcCredentialResponseString == null) {
             throw new InvalidCredentialResourceException(
                     ErrorConstants.SERVER_UNAVAILABLE.getErrorCode(),
                     ErrorConstants.SERVER_UNAVAILABLE.getErrorMessage());
         }
+        log.info("Parsed response → format={}, credentialPresent={}",
+        vcCredentialResponse.getFormat(),
+        vcCredentialResponse.getCredential() != null);
         VCCredentialResponse vcCredentialResponse = objectMapper.readValue(vcCredentialResponseString, VCCredentialResponse.class);
         log.info("Completed Mapping the Credential to Object => " + vcCredentialResponse );
         if(vcCredentialResponse.getCredential() == null){
+            log.error("Credential is NULL from DataShare response!");
+            log.error("Raw response was: {}", vcCredentialResponseString);
             DataShareResponseDto dataShareResponse = objectMapper.readValue(vcCredentialResponseString, DataShareResponseDto.class);
+            log.error("Parsed DataShare error response: {}", dataShareResponse);
+            log.error("ErrorCode from DataShare: {}", dataShareResponse.getErrors().get(0).getErrorCode());
             String errorCode = dataShareResponse.getErrors().get(0).getErrorCode();
             throw new InvalidCredentialResourceException(errorCode.equals("DAT-SER-008") ? ErrorConstants.RESOURCE_NOT_FOUND.getErrorMessage() : ErrorConstants.RESOURCE_EXPIRED.getErrorMessage());
         }
