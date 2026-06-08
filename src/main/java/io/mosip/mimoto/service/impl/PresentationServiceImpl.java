@@ -87,6 +87,9 @@ public class PresentationServiceImpl implements PresentationService {
                                     Base64.getUrlEncoder().encodeToString(vpToken.getBytes(StandardCharsets.UTF_8)),
                                     URLEncoder.encode(presentationSubmission, StandardCharsets.UTF_8));
                         } catch (JsonProcessingException e) {
+                             log.warn("No matching proof type found. credentialProofType={}, expectedTypes={}",
+                            vcCredentialResponse.getCredential().getProof().getType(),
+                            inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
                             throw new VPNotCreatedException(ErrorConstants.INVALID_REQUEST.getErrorMessage());
                         }
                     }
