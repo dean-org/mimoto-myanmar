@@ -70,10 +70,11 @@ public class PresentationServiceImpl implements PresentationService {
                     boolean matchingProofTypes = inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes")
                             .stream()
                             .anyMatch(proofType ->.anyMatch(proofType ->  {
-                            log.info("Comparing proofType={} with credentialProofType={}",
-                                    proofType,
-                                    vcCredentialResponse.getCredential().getProof().getType());
-                            return vcCredentialResponse.getCredential().getProof().getType().equals(proofType);
+                            log.info("Proof type from credential: {}", proofType);
+                            return vcCredentialResponse.getCredential()
+                                    .getProof()
+                                    .getType()
+                                    .equals(proofType);
                         });
                     log.info("Allowed proof types: {}",inputDescriptorDTO.getFormat().get("ldpVc").get("proofTypes"));
                     if (matchingProofTypes) {
