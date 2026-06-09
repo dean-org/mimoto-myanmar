@@ -105,8 +105,22 @@ public class PresentationServiceImpl implements PresentationService {
     }
 
     private VerifiablePresentationDTO constructVerifiablePresentationString(VCCredentialProperties vcCredentialProperties) throws JsonProcessingException {
+              VCCredentialProperties filtered = objectMapper.readValue(
+                objectMapper.writeValueAsString(vcCredentialProperties),
+                VCCredentialProperties.class
+            );
+
+            // Remove large fields from credentialSubject
+            if (filtered.getCredentialSubject() instanceof Map) {
+                Map<String, Object> subject = new LinkedHashMap<>(
+                    (Map<String, Object>) filtered.getCredentialSubject()
+                );
+                subject.remove("face"); // Remove base64 image
+                filtered.setCredentialSubject(subject);
+            }
+
         return VerifiablePresentationDTO.builder()
-                .verifiableCredential(Collections.singletonList(vcCredentialProperties))
+                .verifiableCredential(Collections.singletonList(filtered))
                 .type(Collections.singletonList("VerifiablePresentation"))
                 .context(Collections.singletonList("https://www.w3.org/2018/credentials/v1"))
                 .build();
