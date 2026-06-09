@@ -2,6 +2,7 @@ package io.mosip.mimoto.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.mimoto.dto.mimoto.VCCredentialProperties;
 import io.mosip.mimoto.dto.mimoto.VCCredentialResponse;
 import io.mosip.mimoto.dto.openid.presentation.PresentationDefinitionDTO;
 import io.mosip.mimoto.dto.openid.presentation.PresentationRequestDTO;
@@ -40,11 +41,16 @@ public class PresentationServiceTest {
     PresentationServiceImpl presentationService;
 
     @Before
-    public void setup() throws JsonProcessingException {
+    public void setup() throws Exception  {
         ReflectionTestUtils.setField(presentationService, "injiOvpRedirectURLPattern", "%s#vp_token=%s&presentation_submission=%s");
         ReflectionTestUtils.setField(presentationService, "dataShareUrl", "test_resource");
         ReflectionTestUtils.setField(presentationService, "maximumResponseHeaderSize", 65536);
         when(objectMapper.writeValueAsString(any())).thenReturn("test-data");
+          // Mock readValue to return a real VCCredentialProperties so the face-removal logic doesn't NPE
+        VCCredentialProperties credentialProperties =
+                TestUtilities.getVCCredentialResponseDTO("Ed25519Signature2020").getCredential();
+        when(objectMapper.readValue(eq("test-data"), eq(VCCredentialProperties.class)))
+                .thenReturn(credentialProperties);
     }
     @Test
     public void credentialProofMatchingWithVPRequest() throws Exception {
