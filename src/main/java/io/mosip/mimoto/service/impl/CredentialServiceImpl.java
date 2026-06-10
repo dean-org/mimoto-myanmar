@@ -195,6 +195,9 @@ public class CredentialServiceImpl implements CredentialService {
 
     private Map<String, Object> getPdfResourceFromVcProperties(LinkedHashMap<String, Object> displayProperties, CredentialsSupportedResponse credentialsSupportedResponse, VCCredentialResponse  vcCredentialResponse, IssuerDTO issuerDTO, String dataShareUrl, String credentialValidity) throws IOException, WriterException {
         Map<String, Object> data = new HashMap<>();
+        Map<String, Object> credentialSubject =vcCredentialResponse.getCredential().getCredentialSubject();
+        log.info("Credential Subject = {}", credentialSubject);
+        
         LinkedHashMap<String, Object> rowProperties = new LinkedHashMap<>();
         String backgroundColor = credentialsSupportedResponse.getDisplay().get(0).getBackgroundColor();
         String backgroundImage = credentialsSupportedResponse.getDisplay().get(0).getBackgroundImage().getUri();
