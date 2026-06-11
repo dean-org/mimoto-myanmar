@@ -204,7 +204,12 @@ public class CredentialServiceImpl implements CredentialService {
         String backgroundImage = credentialsSupportedResponse.getDisplay().get(0).getBackgroundImage().getUri();
         String textColor = credentialsSupportedResponse.getDisplay().get(0).getTextColor();
         String credentialSupportedType = credentialsSupportedResponse.getDisplay().get(0).getName();
-        String face = vcCredentialResponse.getCredential().getCredentialSubject().get("face") != null ? (String) vcCredentialResponse.getCredential().getCredentialSubject().get("face") : null;
+        // String face = vcCredentialResponse.getCredential().getCredentialSubject().get("face") != null ? (String) vcCredentialResponse.getCredential().getCredentialSubject().get("face") : null;
+        String face = vcCredentialResponse.getCredential().getCredentialSubject().get("face") != null
+        ? (String) vcCredentialResponse.getCredential().getCredentialSubject().get("face")
+        : vcCredentialResponse.getCredential().getCredentialSubject().get("faceRawImage") != null
+        ? (String) vcCredentialResponse.getCredential().getCredentialSubject().get("faceRawImage")
+        : null;
 
         displayProperties.entrySet().stream()
                 .forEachOrdered(entry -> {
