@@ -47,10 +47,10 @@ public class PresentationServiceTest {
         ReflectionTestUtils.setField(presentationService, "maximumResponseHeaderSize", 65536);
         when(objectMapper.writeValueAsString(any())).thenReturn("test-data");
           // Mock readValue to return a real VCCredentialProperties so the face-removal logic doesn't NPE
-        VCCredentialProperties credentialProperties =
-                TestUtilities.getVCCredentialResponseDTO("Ed25519Signature2020").getCredential();
-        when(objectMapper.readValue(eq("test-data"), eq(VCCredentialProperties.class)))
-                .thenReturn(credentialProperties);
+        // VCCredentialProperties credentialProperties =
+        //         TestUtilities.getVCCredentialResponseDTO("Ed25519Signature2020").getCredential();
+        // when(objectMapper.readValue(eq("test-data"), eq(VCCredentialProperties.class)))
+        //         .thenReturn(credentialProperties);
     }
     @Test
     public void credentialProofMatchingWithVPRequest() throws Exception {
