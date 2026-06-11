@@ -126,28 +126,36 @@ public class PresentationServiceImpl implements PresentationService {
     //             .build();
     // }
 
-    private VerifiablePresentationDTO constructVerifiablePresentationString(
-        VCCredentialProperties vcCredentialProperties) throws JsonProcessingException {
+//     private VerifiablePresentationDTO constructVerifiablePresentationString(
+//         VCCredentialProperties vcCredentialProperties) throws JsonProcessingException {
 
-    VCCredentialProperties filtered = objectMapper.readValue(
-        objectMapper.writeValueAsString(vcCredentialProperties),
-        VCCredentialProperties.class
-    );
+//     VCCredentialProperties filtered = objectMapper.readValue(
+//         objectMapper.writeValueAsString(vcCredentialProperties),
+//         VCCredentialProperties.class
+//     );
 
-    // Remove large fields from credentialSubject safely
-    Object subject = filtered.getCredentialSubject();
-    if (subject instanceof Map) {
-        Map<String, Object> subjectMap = new LinkedHashMap<>((Map<String, Object>) subject);
-        subjectMap.remove("face");
-        filtered.setCredentialSubject(subjectMap);
+//     // Remove large fields from credentialSubject safely
+//     Object subject = filtered.getCredentialSubject();
+//     if (subject instanceof Map) {
+//         Map<String, Object> subjectMap = new LinkedHashMap<>((Map<String, Object>) subject);
+//         subjectMap.remove("face");
+//         filtered.setCredentialSubject(subjectMap);
+//     }
+
+//     return VerifiablePresentationDTO.builder()
+//             .verifiableCredential(Collections.singletonList(filtered))
+//             .type(Collections.singletonList("VerifiablePresentation"))
+//             .context(Collections.singletonList("https://www.w3.org/2018/credentials/v1"))
+//             .build();
+// }
+
+      private VerifiablePresentationDTO constructVerifiablePresentationString(VCCredentialProperties vcCredentialProperties) throws JsonProcessingException {
+        return VerifiablePresentationDTO.builder()
+                .verifiableCredential(Collections.singletonList(vcCredentialProperties))
+                .type(Collections.singletonList("VerifiablePresentation"))
+                .context(Collections.singletonList("https://www.w3.org/2018/credentials/v1"))
+                .build();
     }
-
-    return VerifiablePresentationDTO.builder()
-            .verifiableCredential(Collections.singletonList(filtered))
-            .type(Collections.singletonList("VerifiablePresentation"))
-            .context(Collections.singletonList("https://www.w3.org/2018/credentials/v1"))
-            .build();
-}
 
     private String constructPresentationSubmission(VerifiablePresentationDTO verifiablePresentationDTO, PresentationDefinitionDTO presentationDefinitionDTO, InputDescriptorDTO inputDescriptorDTO) throws JsonProcessingException {
         AtomicInteger atomicInteger = new AtomicInteger(0);
