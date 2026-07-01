@@ -59,11 +59,11 @@ jobs:
           echo "LS ./"
           ls .
           echo "unzip command"
-          unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "${{ env.SERVICE_LOCATION }}/target/"
+          unzip -uj "${{ env.BUILD_ARTIFACT }}.zip" "target/*" -d "mimoto-myanmar/target/"
           
           echo "find command"
-          cd ${{ env.SERVICE_LOCATION }}
-          find ../${{ env.SERVICE_LOCATION }} -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
+          cd mimoto-myanmar
+          find ../mimoto-myanmar -path '*/target/*' -name '*.jar'  -type f  -executable -exec zip ${{ env.NEW_BUILD_ARTIFACT }}.zip {} +
 
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') }}
@@ -75,7 +75,7 @@ jobs:
   sonar_analysis:
     needs: build-mimoto
     if: "${{ github.event_name != 'pull_request' }}"
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
+    uses: ./.github/workflows/docker-build.yml
     with:
       SERVICE_LOCATION: ./
     secrets:
@@ -97,7 +97,7 @@ jobs:
             BUILD_ARTIFACT: 'mimoto-recreated'
             SQUASH_LAYERS: '8'
       fail-fast: false
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
+    uses: ./.github/workflows/docker-build.yml
     name: ${{ matrix.SERVICE_NAME }}
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
