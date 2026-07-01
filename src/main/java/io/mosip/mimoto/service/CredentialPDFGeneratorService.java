@@ -68,6 +68,7 @@ public class CredentialPDFGeneratorService {
     @Autowired
     private PixelPass pixelPass;
 
+    private static final Logger log = LoggerFactory.getLogger(CredentialPDFGeneratorService.class);
 
     public ByteArrayInputStream generatePdfForVerifiableCredentials(String credentialType, VCCredentialResponse vcCredentialResponse, IssuerDTO issuerDTO, CredentialsSupportedResponse credentialsSupportedResponse, String dataShareUrl, String credentialValidity, String locale) throws Exception {
         LinkedHashMap<String, Map<CredentialIssuerDisplayResponse, Object>> displayProperties = loadDisplayPropertiesFromWellknown(vcCredentialResponse, credentialsSupportedResponse, locale);
@@ -151,6 +152,8 @@ public class CredentialPDFGeneratorService {
         String qrCodeImage;
         if (QRCodeType.OnlineSharing.equals(issuerDTO.getQr_code_type())) {
             // Login flow
+            log.info("QR Code Type: {}", issuerDTO.getQr_code_type());
+            log.info("DataShare URL Present: {}", !dataShareUrl.isEmpty());
             if (dataShareUrl.isEmpty()) {
                 qrCodeImage = constructQRCodeWithVCData(vcCredentialResponse);
             } else {
@@ -225,24 +228,41 @@ public class CredentialPDFGeneratorService {
     }
 
     private String constructQRCodeWithVCData(VCCredentialResponse vcCredentialResponse) throws JsonProcessingException, WriterException {
+        String credentialJson =objectMapper.writeValueAsString(vcCredentialResponse.getCredential());
         String qrData = pixelPass.generateQRData(objectMapper.writeValueAsString(vcCredentialResponse.getCredential()), "");
+        log.info("Credential JSON Length : {}", credentialJson.length());
+        log.info("PixelPass QR Payload Length : {}", qrData.length());
         if (allowedQRDataSizeLimit > qrData.length()) {
             return constructQRCode(qrData);
         }
+          log.warn("QR Payload exceeded allowed size. Limit={}, Actual={}",
+            allowedQRDataSizeLimit,
+            qrData.length());
         return "";
     }
 
     private String constructQRCodeWithAuthorizeRequest(VCCredentialResponse vcCredentialResponse, String dataShareUrl) throws WriterException, JsonProcessingException {
+         log.info("========== QR Generation Started ==========");
+        log.info("DataShare URL : {}", dataShareUrl);
         PresentationDefinitionDTO presentationDefinitionDTO = presentationService.constructPresentationDefinition(vcCredentialResponse);
+        log.info("PresentationDefinition Object : {}", presentationDefinitionDTO);
         String presentationString = objectMapper.writeValueAsString(presentationDefinitionDTO);
         String qrData = String.format(ovpQRDataPattern, URLEncoder.encode(dataShareUrl, StandardCharsets.UTF_8), URLEncoder.encode(presentationString, StandardCharsets.UTF_8));
+        log.info("QR Payload : {}", qrData);
+        log.info("QR Payload Length : {}", qrData.length());
+        log.info("========== QR Generation Completed ==========");
         return constructQRCode(qrData);
     }
 
     private String constructQRCode(String qrData) throws WriterException {
+        log.info("Generating QR Image...");
+        log.info("QR Data Size : {}", qrData.length());
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, qrCodeWidth, qrCodeHeight);
+        log.info("QR Width : {}", qrCodeWidth);
+        log.info("QR Height : {}", qrCodeHeight);
         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+        log.info("Generated QR Image Base64 Length : {}", base64.length());
         return Utilities.encodeToString(qrImage, "png");
     }
 
