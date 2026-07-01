@@ -68,8 +68,6 @@ public class CredentialPDFGeneratorService {
     @Autowired
     private PixelPass pixelPass;
 
-    private static final Logger log = LoggerFactory.getLogger(CredentialPDFGeneratorService.class);
-
     public ByteArrayInputStream generatePdfForVerifiableCredentials(String credentialType, VCCredentialResponse vcCredentialResponse, IssuerDTO issuerDTO, CredentialsSupportedResponse credentialsSupportedResponse, String dataShareUrl, String credentialValidity, String locale) throws Exception {
         LinkedHashMap<String, Map<CredentialIssuerDisplayResponse, Object>> displayProperties = loadDisplayPropertiesFromWellknown(vcCredentialResponse, credentialsSupportedResponse, locale);
         Map<String, Object> data = getPdfResourceFromVcProperties(displayProperties, credentialsSupportedResponse, vcCredentialResponse, issuerDTO, dataShareUrl, credentialValidity);
@@ -261,6 +259,7 @@ public class CredentialPDFGeneratorService {
         BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, qrCodeWidth, qrCodeHeight);
         log.info("QR Width : {}", qrCodeWidth);
         log.info("QR Height : {}", qrCodeHeight);
+        String base64 = Utilities.encodeToString(qrImage, "png");
         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
         log.info("Generated QR Image Base64 Length : {}", base64.length());
         return Utilities.encodeToString(qrImage, "png");
