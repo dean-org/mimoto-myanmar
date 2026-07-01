@@ -259,8 +259,8 @@ public class CredentialPDFGeneratorService {
         BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, qrCodeWidth, qrCodeHeight);
         log.info("QR Width : {}", qrCodeWidth);
         log.info("QR Height : {}", qrCodeHeight);
-        String base64 = Utilities.encodeToString(qrImage, "png");
         BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+        String base64 = Utilities.encodeToString(qrImage, "png");
         log.info("Generated QR Image Base64 Length : {}", base64.length());
         return Utilities.encodeToString(qrImage, "png");
     }
